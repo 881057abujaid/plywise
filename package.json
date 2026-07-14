@@ -11,7 +11,14 @@
     "doc": "docs"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev:web": "npm run dev --workspace=@plywise/web",
+    "dev:server": "npm run dev --workspace=@plywise/server",
+    "lint:web": "npm run lint --workspace=@plywise/web",
+    "lint:server": "npm run lint --workspace=@plywise/server",
+    "lint": "npm run lint:web && npm run lint:server",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check"
   },
   "keywords": [
     "chess",
@@ -20,5 +27,11 @@
   ],
   "author": "Abujaid Raja",
   "license": "UNLICENSED",
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.7.0",
+    "globals": "^17.7.0",
+    "prettier": "^3.9.5"
+  }
 }

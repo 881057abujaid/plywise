@@ -5,10 +5,10 @@ const app = express();
 app.use(express.json());
 
 app.get("/api/v1/health", (req, res) => {
-    res.status(200).json({
-        success: true,
-        message: "PlyWise API is healthy",
-    });
+  res.status(200).json({
+    success: true,
+    message: "PlyWise API is healthy",
+  });
 });
 
 export default app;
