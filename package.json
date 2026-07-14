@@ -1,0 +1,24 @@
+{
+  "name": "plywise",
+  "version": "0.1.0",
+  "private": true,
+  "description": "PlyWise - The Interactive Chess Mentor",
+  "workspaces": [
+    "apps/*"
+  ],
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "chess",
+    "chess-mentor",
+    "learning"
+  ],
+  "author": "Abujaid Raja",
+  "license": "UNLICENSED",
+  "type": "module"
+}
