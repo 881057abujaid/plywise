@@ -2,8 +2,7 @@
   "name": "@plywise/server",
   "version": "0.1.0",
   "description": "PlyWise backend server",
-  "private": "true",
-  "main": "index.js",
+  "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "node --watch src/server.js",
