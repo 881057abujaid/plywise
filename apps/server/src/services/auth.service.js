@@ -1,4 +1,5 @@
 import User from "../models/user.model.js";
+import Player from "../models/player.model.js";
 import ApiError from "../utils/ApiError.js";
 import { generateAccessToken } from "../utils/jwtToken.js";
 import { hashPassword, comparePassword } from "../utils/password.js";
@@ -15,11 +16,20 @@ export const signup = async ({ email, password }) => {
 
     const hashedPassword = await hashPassword(password);
 
-    const user = await User.create({ email, password: hashedPassword });
+    const user = await User.create({
+        email,
+        password: hashedPassword
+    });
+
+    const player = await Player.create({
+        user: user._id,
+        displayName: user.email.split("@")[0]
+    });
 
     return {
         id: user._id,
-        email: user.email
+        email: user.email,
+        displayName: player.displayName
     }
 };
 
