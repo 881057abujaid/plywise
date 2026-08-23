@@ -15,7 +15,12 @@ const playerSchema = new mongoose.Schema({
     avatar: {
         type: String,
         default: null
-    }
+    },
+    rating: {
+        type: Number,
+        default: 1000,
+        min: 0,
+    },
 },
     {
         timestamps: true
