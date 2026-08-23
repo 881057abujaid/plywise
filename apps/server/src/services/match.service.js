@@ -2,7 +2,7 @@ import Match from "../models/match.model.js";
 import Player from "../models/player.model.js";
 import ApiError from "../utils/ApiError.js";
 
-export const createMatch = async (userId, mode) => {
+export const createMatch = async (userId, mode, botDifficulty) => {
     const player = await Player.findOne({ user: userId });
 
     if (!player) {
@@ -11,6 +11,37 @@ export const createMatch = async (userId, mode) => {
 
     if (!["pvp", "pve"].includes(mode)) {
         throw new ApiError(400, "Invalid match mode.");
+    }
+
+    if (mode === "pve") {
+        if (!["easy", "medium", "hard"].includes(botDifficulty)) {
+            throw new ApiError(400, "Invalid bot difficulty.");
+        }
+
+        const existingMatch = await Match.findOne({
+            player1: player._id,
+            mode: "pve",
+            status: {
+                $in: ["waiting", "active"]
+            }
+        });
+
+        if (existingMatch) {
+            throw new ApiError(409, "You already have a match in progress or waiting for an opponent.");
+        }
+
+        const match = await Match.create({
+            player1: player._id,
+            mode: "pve",
+            botDifficulty,
+            status: "active"
+        });
+
+        await match.populate([
+            { path: "player1", select: "rating displayName avatar" }
+        ]);
+
+        return match;
     }
 
     if (mode === "pvp") {

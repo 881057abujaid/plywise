@@ -11,6 +11,11 @@ const matchSchema = new mongoose.Schema({
         ref: "Player",
         required: false,
     },
+    botDifficulty: {
+        type: String,
+        enum: ["easy", "medium", "hard"],
+        default: "easy",
+    },
     mode: {
         type: String,
         enum: ["pvp", "pve"],
