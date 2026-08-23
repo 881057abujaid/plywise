@@ -5,6 +5,7 @@ import notFound from "./middleware/errorHandler.js";
 import errorHandler from "./middleware/errorHandler.js";
 import authRoutes from "./routes/auth.routes.js";
 import playerRoutes from "./routes/player.routes.js";
+import matchRoutes from "./routes/match.routes.js";
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use("/api/v1/health", healthRouter);
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/players", playerRoutes);
+app.use("/api/v1/matches", matchRoutes);
 
 // Not Found Handler
 app.use(notFound);
