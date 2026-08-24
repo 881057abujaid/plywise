@@ -1,6 +1,8 @@
 import Game from "../models/game.model.js";
 import ApiError from "../utils/ApiError.js";
 import { makeMove } from "../utils/chess.js";
+import { updateRatings } from "./rating.service.js";
+import { updateStatistics } from "./statistics.service.js";
 
 export const makeGameMove = async (userId, gameId, from, to, promotion) => {
     const game = await Game.findById(gameId).populate({
@@ -12,7 +14,7 @@ export const makeGameMove = async (userId, gameId, from, to, promotion) => {
     });
 
     if (!game) {
-        throw new ApiError(404, "Geme not found.");
+        throw new ApiError(404, "Game not found.");
     }
 
     if (game.status !== "active") {
@@ -57,7 +59,7 @@ export const makeGameMove = async (userId, gameId, from, to, promotion) => {
 
     await game.save();
 
-    if (game.status === "completed") {
+    if (game.status === "completed" && match.mode === "pvp") {
         match.status = "completed";
 
         if (game.result === "white") {
@@ -69,6 +71,18 @@ export const makeGameMove = async (userId, gameId, from, to, promotion) => {
         }
 
         await match.save();
+
+        await updateRatings(
+            match.player1._id,
+            match.player2._id,
+            match.result
+        );
+
+        await updateStatistics(
+            match.player1._id,
+            match.player2._id,
+            match.result
+        );
     }
 
     return {
@@ -79,6 +93,6 @@ export const makeGameMove = async (userId, gameId, from, to, promotion) => {
         result: game.result,
         isCheck: result.isCheck,
         isCheckmate: result.isCheckmate,
-        isStalemate: result.isStalemate
+        isStalemate: result.isStalemate,
     };
 };

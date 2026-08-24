@@ -13,6 +13,7 @@ export const getMyProfile = async (userId) => {
         displayName: player.displayName,
         avatar: player.avatar,
         rating: player.rating,
+        statistics: player.statistics
     };
 };
 
@@ -37,5 +38,6 @@ export const updateMyProfile = async (userId, updates) => {
         displayName: player.displayName,
         avatar: player.avatar,
         rating: player.rating,
+        statistics: player.statistics
     };
 };

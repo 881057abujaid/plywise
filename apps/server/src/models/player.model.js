@@ -21,6 +21,28 @@ const playerSchema = new mongoose.Schema({
         default: 1000,
         min: 0,
     },
+    statistics: {
+        gamesPlayed: {
+            type: Number,
+            default: 0,
+            min: 0
+        },
+        wins: {
+            type: Number,
+            default: 0,
+            min: 0
+        },
+        losses: {
+            type: Number,
+            default: 0,
+            min: 0
+        },
+        draws: {
+            type: Number,
+            default: 0,
+            min: 0
+        }
+    }
 },
     {
         timestamps: true
