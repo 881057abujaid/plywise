@@ -36,6 +36,7 @@
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
+    "chess.js": "^1.4.0",
     "jsonwebtoken": "^9.0.3"
   }
 }

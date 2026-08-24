@@ -1,5 +1,6 @@
 import Match from "../models/match.model.js";
 import Player from "../models/player.model.js";
+import { createGame } from "../utils/createGame.js";
 import ApiError from "../utils/ApiError.js";
 
 export const createMatch = async (userId, mode, botDifficulty) => {
@@ -41,6 +42,8 @@ export const createMatch = async (userId, mode, botDifficulty) => {
             { path: "player1", select: "rating displayName avatar" }
         ]);
 
+        await createGame(match._id);
+
         return match;
     }
 
@@ -70,6 +73,8 @@ export const createMatch = async (userId, mode, botDifficulty) => {
                 { path: "player1", select: "rating displayName avatar" },
                 { path: "player2", select: "rating displayName avatar" }
             ]);
+
+            await createGame(opponentMatch._id);
 
             return opponentMatch;
         }
