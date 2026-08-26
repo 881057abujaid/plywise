@@ -11,6 +11,11 @@ const matchSchema = new mongoose.Schema({
         ref: "Player",
         required: false,
     },
+    bot: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Bot",
+        required: false,
+    },
     botDifficulty: {
         type: String,
         enum: ["easy", "medium", "hard"],

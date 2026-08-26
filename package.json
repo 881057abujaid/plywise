@@ -18,7 +18,8 @@
     "lint:server": "npm run lint --workspace=@plywise/server",
     "lint": "npm run lint:web && npm run lint:server",
     "format": "prettier . --write",
-    "format:check": "prettier . --check"
+    "format:check": "prettier . --check",
+    "db:seed": "npm run seed --workspace=@plywise/server"
   },
   "keywords": [
     "chess",
