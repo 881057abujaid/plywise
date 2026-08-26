@@ -3,6 +3,7 @@ import ApiError from "../utils/ApiError.js";
 import { makeMove } from "../utils/chess.js";
 import { updateRatings } from "./rating.service.js";
 import { updateStatistics } from "./statistics.service.js";
+import { generateBotMove } from "./bot.service.js";
 
 export const makeGameMove = async (userId, gameId, from, to, promotion) => {
     const game = await Game.findById(gameId).populate({
@@ -43,6 +44,9 @@ export const makeGameMove = async (userId, gameId, from, to, promotion) => {
     } catch (error) {
         throw new ApiError(400, error.message);
     }
+
+    const playerMove = result.move;
+    let botMove = null;
 
     game.board = result.fen;
     game.turn = playerColor === "white" ? "black" : "white";
@@ -85,14 +89,65 @@ export const makeGameMove = async (userId, gameId, from, to, promotion) => {
         );
     }
 
+    if (game.status === "active" && match.mode === "pve" && game.turn === "black") {
+        botMove = await makeBotMove(game);
+        await game.save();
+    }
+
     return {
         gameId: game._id,
+        playerMove: {
+            from: playerMove.from,
+            to: playerMove.to,
+            san: playerMove.san
+        },
+        botMove: botMove ? {
+            from: botMove.move.from,
+            to: botMove.move.to,
+            san: botMove.move.san
+        } : null,
         board: game.board,
         turn: game.turn,
         status: game.status,
         result: game.result,
+        isCheck: botMove?.isCheck ?? result.isCheck,
+        isCheckmate: botMove?.isCheckmate ?? result.isCheckmate,
+        isStalemate: botMove?.isStalemate ?? result.isStalemate
+    };
+};
+
+const makeBotMove = async (game) => {
+    const botMove = generateBotMove(
+        game.board,
+        game.match.botDifficulty
+    );
+
+    const result = makeMove(
+        game.board,
+        botMove.from,
+        botMove.to,
+        botMove.promotion
+    );
+
+    game.board = result.fen;
+
+    if (result.isGameOver) {
+        game.status = "completed";
+
+        if (result.isCheckmate) {
+            game.result = "black";
+        } else {
+            game.result = "draw";
+        }
+        return result;
+    } else {
+        game.turn = "white";
+    }
+
+    return {
+        move: result.move,
         isCheck: result.isCheck,
         isCheckmate: result.isCheckmate,
-        isStalemate: result.isStalemate,
+        isStalemate: result.isStalemate
     };
 };

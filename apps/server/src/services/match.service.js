@@ -1,5 +1,6 @@
 import Match from "../models/match.model.js";
 import Player from "../models/player.model.js";
+import Bot from "../models/bot.model.js";
 import { createGame } from "../utils/createGame.js";
 import ApiError from "../utils/ApiError.js";
 
@@ -19,12 +20,20 @@ export const createMatch = async (userId, mode, botDifficulty) => {
             throw new ApiError(400, "Invalid bot difficulty.");
         }
 
+        const bot = await Bot.findOne({
+            name: `PlyBot ${botDifficulty.charAt(0).toUpperCase()}${botDifficulty.slice(1)}`
+        });
+
+        if (!bot) {
+            throw new ApiError(404, "Bot not found.");
+        }
+
         const existingMatch = await Match.findOne({
             player1: player._id,
+            bot: bot._id,
+            botDifficulty,
             mode: "pve",
-            status: {
-                $in: ["waiting", "active"]
-            }
+            status: "active"
         });
 
         if (existingMatch) {
@@ -33,6 +42,7 @@ export const createMatch = async (userId, mode, botDifficulty) => {
 
         const match = await Match.create({
             player1: player._id,
+            bot: bot._id,
             mode: "pve",
             botDifficulty,
             status: "active"
@@ -54,7 +64,6 @@ export const createMatch = async (userId, mode, botDifficulty) => {
             status: {
                 $in: ["waiting", "active"]
             },
-            player2: null
         });
 
         if (existingMatch) {
