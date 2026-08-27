@@ -2,15 +2,15 @@ function App() {
   return (
     <main className="relative min-h-screen flex flex-col items-center justify-center p-6 overflow-hidden bg-bg text-text-primary font-sans">
       {/* Radial Gold Accent Glow */}
-      <div 
-        className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,rgba(212,168,79,0.08)_0%,rgba(11,13,18,1)_70%)] pointer-events-none" 
-        aria-hidden="true" 
+      <div
+        className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,rgba(212,168,79,0.08)_0%,rgba(11,13,18,1)_70%)] pointer-events-none"
+        aria-hidden="true"
       />
 
       {/* Subtle Chess Grid Overlay */}
-      <div 
-        className="absolute inset-0 bg-[linear-gradient(to_right,rgba(41,46,56,0.25)_1px,transparent_1px),linear-gradient(to_bottom,rgba(41,46,56,0.25)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_at_50%_50%,black_20%,transparent_75%)] pointer-events-none" 
-        aria-hidden="true" 
+      <div
+        className="absolute inset-0 bg-[linear-gradient(to_right,rgba(41,46,56,0.25)_1px,transparent_1px),linear-gradient(to_bottom,rgba(41,46,56,0.25)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_at_50%_50%,black_20%,transparent_75%)] pointer-events-none"
+        aria-hidden="true"
       />
 
       {/* Main Hero Card */}
