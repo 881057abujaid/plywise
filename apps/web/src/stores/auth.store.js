@@ -5,6 +5,7 @@ const useAuthStore = create((set) => ({
     user: null,
     isAuthenticated: false,
     isLoading: false,
+    isInitializing: true,
 
     // Actions
     login: async (credentials) => {
@@ -74,6 +75,29 @@ const useAuthStore = create((set) => ({
             throw error;
         }
     },
+
+    initializeAuth: async () => {
+        set({ isInitializing: true });
+
+        try {
+            const response = await getMeApi();
+            const user = response.data;
+
+            set({
+                user,
+                isAuthenticated: true,
+                isInitializing: false,
+            });
+        } catch (error) {
+            set({
+                user: null,
+                isAuthenticated: false,
+                isInitializing: false,
+            });
+
+            throw error;
+        }
+    }
 }));
 
 export default useAuthStore;
