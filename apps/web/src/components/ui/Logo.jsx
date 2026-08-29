@@ -3,7 +3,7 @@ import plywiseMark from "../../assets/brand/plywise-mark.png";
 const MARK_SIZES = {
     sm: 28,
     md: 40,
-    lg: 56,
+    lg: 70,
 };
 
 const Logo = ({ variant = "full", size = "md", className = "" }) => {
