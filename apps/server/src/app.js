@@ -1,4 +1,6 @@
 import express from "express";
+import cors from "cors";
+import env from "./config/env.js";
 
 import healthRouter from "./routes/health.route.js";
 import notFound from "./middleware/errorHandler.js";
@@ -11,6 +13,11 @@ import gameRoutes from "./routes/game.routes.js";
 const app = express();
 
 // Middlewares
+app.use(
+    cors({
+        origin: env.clientUrl || "http://localhost:5173",
+    })
+);
 app.use(express.json());
 
 // Routes
