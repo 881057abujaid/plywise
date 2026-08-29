@@ -1,10 +1,8 @@
 import { create } from "zustand";
 import { login as loginApi, signup as signupApi, getMe as getMeApi } from "../api/auth.api";
-import { setAccessToken, clearAccessToken } from "../api/client";
 
 const useAuthStore = create((set) => ({
     user: null,
-    accessToken: null,
     isAuthenticated: false,
     isLoading: false,
 
@@ -14,13 +12,10 @@ const useAuthStore = create((set) => ({
 
         try {
             const response = await loginApi(credentials);
-            const { user, accessToken } = response.data;
-
-            setAccessToken(accessToken);
+            const { user } = response.data;
 
             set({
                 user,
-                accessToken,
                 isAuthenticated: true,
                 isLoading: false,
             });
@@ -48,10 +43,8 @@ const useAuthStore = create((set) => ({
     },
 
     logout: () => {
-        clearAccessToken();
         set({
             user: null,
-            accessToken: null,
             isAuthenticated: false,
             isLoading: false,
         });
@@ -72,10 +65,8 @@ const useAuthStore = create((set) => ({
 
             return user;
         } catch (error) {
-            clearAccessToken();
             set({
                 user: null,
-                accessToken: null,
                 isAuthenticated: false,
                 isLoading: false,
             });

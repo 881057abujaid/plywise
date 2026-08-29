@@ -12,12 +12,8 @@ export const login = async (credentials) => {
     return response.data;
 };
 
-export const getMe = async (accessToken) => {
-    const response = await apiClient.get("auth/me", {
-        headers: {
-            Authorization: `Bearer ${accessToken}`,
-        },
-    });
+export const getMe = async () => {
+    const response = await apiClient.get("auth/me");
 
     return response.data;
 };

@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import env from "./config/env.js";
+import cookieParser from "cookie-parser";
 
 import healthRouter from "./routes/health.route.js";
 import notFound from "./middleware/errorHandler.js";
@@ -16,9 +17,11 @@ const app = express();
 app.use(
     cors({
         origin: env.clientUrl || "http://localhost:5173",
+        credentials: true,
     })
 );
 app.use(express.json());
+app.use(cookieParser());
 
 // Routes
 app.use("/api/v1/health", healthRouter);
