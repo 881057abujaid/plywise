@@ -4,23 +4,23 @@ import User from "../models/user.model.js";
 
 const authMiddleware = async (req, res, next) => {
     try {
-        const authHeader = req.headers.authorization;
+        const token = req.cookies.accessToken;
 
-        if (!authHeader?.startsWith("Bearer ")) {
+        if (!token) {
             throw new ApiError(401, "Authentication required.");
         }
 
-        const token = authHeader.split(" ")[1];
         const payload = verifyAccessToken(token);
+
         const user = await User.findById(payload.userId);
 
         if (!user) {
-            throw new ApiError(401, "User no longer exists.");
+            throw new ApiError(404, "User no longer exists.");
         }
 
         req.user = user;
-        next();
 
+        next();
     } catch (error) {
         next(error);
     }
