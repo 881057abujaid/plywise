@@ -19,3 +19,6 @@ export {
 export {
     default as PasswordInput
 } from "./PasswordInput";
+export {
+    default as Avatar
+} from "./Avatar";
