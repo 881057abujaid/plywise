@@ -52,9 +52,12 @@ export const createMatch = async (userId, mode, botDifficulty) => {
             { path: "player1", select: "rating displayName avatar" }
         ]);
 
-        await createGame(match._id);
+        const game = await createGame(match._id);
 
-        return match;
+        return {
+            match,
+            gameId: game._id
+        };
     }
 
     if (mode === "pvp") {
@@ -83,9 +86,12 @@ export const createMatch = async (userId, mode, botDifficulty) => {
                 { path: "player2", select: "rating displayName avatar" }
             ]);
 
-            await createGame(opponentMatch._id);
+            const game = await createGame(opponentMatch._id);
 
-            return opponentMatch;
+            return {
+                match: opponentMatch,
+                gameId: game._id
+            };
         }
     }
 

@@ -151,3 +151,44 @@ const makeBotMove = async (game) => {
         isStalemate: result.isStalemate
     };
 };
+
+export const getGameById = async (userId, gameId) => {
+    const game = await Game.findById(gameId).populate({
+        path: "match",
+        populate: [
+            { path: "player1", select: "user displayAvatar avatar rating" },
+            { path: "player2", select: "user displayAvatar avatar rating" },
+            { path: "bot", select: "name difficulty" }
+        ]
+    });
+
+    if (!game) {
+        throw new ApiError(404, "Game not found.");
+    }
+
+    const match = game.match;
+    const isPlayer1 = match.player1?.user?.toString() === userId.toString();
+    const isPlayer2 = match.player2?.user?.toString() === userId.toString();
+
+    if (!isPlayer1 && !isPlayer2) {
+        throw new ApiError(403, "You are not a participant in this game.");
+    }
+
+    return {
+        id: game._id,
+        match: {
+            id: match._id,
+            mode: match.mode,
+            status: match.status,
+            result: match.result,
+            botDifficulty: match.botDifficulty,
+            player1: match.player1,
+            player2: match.player2,
+            bot: match.bot
+        },
+        board: game.board,
+        turn: game.turn,
+        status: game.status,
+        result: game.result
+    };
+};
