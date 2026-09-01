@@ -1,8 +1,8 @@
-import * as matchServive from "../services/match.service.js";
+import * as matchService from "../services/match.service.js";
 
 export const createMatch = async (req, res, next) => {
     try {
-        const match = await matchServive.createMatch(
+        const match = await matchService.createMatch(
             req.user._id,
             req.body.mode,
             req.body.botDifficulty
