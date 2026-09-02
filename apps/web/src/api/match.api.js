@@ -8,3 +8,8 @@ export const createMatch = async ({ mode, botDifficulty }) => {
 
     return response.data;
 };
+
+export const getMatchHistory = async () => {
+    const response = await apiClient.get("/matches/me");
+    return response.data;
+};
