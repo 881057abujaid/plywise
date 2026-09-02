@@ -33,7 +33,7 @@ const matchSchema = new mongoose.Schema({
     },
     result: {
         type: String,
-        enum: ["player1", "player2", "draw"],
+        enum: ["player1", "player2", "bot", "draw"],
         default: null,
     },
 },

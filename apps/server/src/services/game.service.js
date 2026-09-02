@@ -46,6 +46,17 @@ export const makeGameMove = async (userId, gameId, from, to, promotion) => {
     }
 
     const playerMove = result.move;
+    const moveNumber = Math.floor(game.moves.length / 2) + 1;
+
+    game.moves.push({
+        moveNumber,
+        color: playerColor,
+        from: playerMove.from,
+        to: playerMove.to,
+        san: playerMove.san,
+        promotion: promotion ?? null,
+    });
+
     let botMove = null;
 
     game.board = result.fen;
@@ -89,9 +100,37 @@ export const makeGameMove = async (userId, gameId, from, to, promotion) => {
         );
     }
 
-    if (game.status === "active" && match.mode === "pve" && game.turn === "black") {
+    if (
+        game.status === "active" &&
+        match.mode === "pve" &&
+        game.turn === "black"
+    ) {
         botMove = await makeBotMove(game);
+
+        game.moves.push({
+            moveNumber: Math.floor(game.moves.length / 2) + 1,
+            color: "black",
+            from: botMove.move.from,
+            to: botMove.move.to,
+            san: botMove.move.san,
+            promotion: botMove.move.promotion ?? null,
+        });
+
         await game.save();
+
+        if (game.status === "completed" && match.mode === "pve") {
+            match.status = "completed";
+
+            if (game.result === "white") {
+                match.result = "player1";
+            } else if (game.result === "black") {
+                match.result = "bot";
+            } else {
+                match.result = "draw";
+            }
+
+            await match.save();
+        }
     }
 
     return {
@@ -110,6 +149,7 @@ export const makeGameMove = async (userId, gameId, from, to, promotion) => {
         turn: game.turn,
         status: game.status,
         result: game.result,
+        moves: game.moves,
         isCheck: botMove?.isCheck ?? result.isCheck,
         isCheckmate: botMove?.isCheckmate ?? result.isCheckmate,
         isStalemate: botMove?.isStalemate ?? result.isStalemate
@@ -139,7 +179,12 @@ const makeBotMove = async (game) => {
         } else {
             game.result = "draw";
         }
-        return result;
+        return {
+            move: result.move,
+            isCheck: result.isCheck,
+            isCheckmate: result.isCheckmate,
+            isStalemate: result.isStalemate
+        };
     } else {
         game.turn = "white";
     }
@@ -186,6 +231,7 @@ export const getGameById = async (userId, gameId) => {
             player2: match.player2,
             bot: match.bot
         },
+        moves: game.moves,
         board: game.board,
         turn: game.turn,
         status: game.status,

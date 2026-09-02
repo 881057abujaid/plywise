@@ -27,6 +27,40 @@ const gameSchema = new mongoose.Schema({
         enum: ["white", "black", "draw"],
         default: null,
     },
+    moves: [
+        {
+            moveNumber: {
+                type: Number,
+                required: true,
+                min: 1,
+            },
+            color: {
+                type: String,
+                enum: ["white", "black"],
+                required: true,
+            },
+            from: {
+                type: String,
+                required: true,
+                trim: true,
+            },
+            to: {
+                type: String,
+                required: true,
+                trim: true,
+            },
+            san: {
+                type: String,
+                required: true,
+                trim: true,
+            },
+            promotion: {
+                type: String,
+                default: null,
+                trim: true,
+            },
+        },
+    ],
 },
     {
         timestamps: true,

@@ -52,6 +52,7 @@ const useGameStore = create((set) => ({
                     turn: result.turn,
                     status: result.status,
                     result: result.result,
+                    moves: result.moves,
                 } : state.game,
                 isMoving: false,
             }));
