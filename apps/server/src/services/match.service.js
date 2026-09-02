@@ -1,6 +1,7 @@
 import Match from "../models/match.model.js";
 import Player from "../models/player.model.js";
 import Bot from "../models/bot.model.js";
+import Game from "../models/game.model.js";
 import { createGame } from "../utils/createGame.js";
 import ApiError from "../utils/ApiError.js";
 
@@ -131,4 +132,55 @@ export const findOpponent = async (playerId, rating) => {
     });
 
     return suitableMatches[0];
+};
+
+export const getMyMatchHistory = async (userId) => {
+    const player = await Player.findOne({ user: userId });
+
+    if (!player) {
+        throw new ApiError(404, "Player profile not found.");
+    }
+
+    const matches = await Match.find({
+        $or: [
+            { player1: player._id },
+            { player2: player._id },
+        ],
+    })
+        .populate("player1", "displayName avatar rating")
+        .populate("player2", "displayName avatar rating")
+        .populate("bot", "name difficulty")
+        .sort({ createdAt: -1 });
+
+    const matchIds = matches.map((match) => match._id);
+
+    const games = await Game.find({
+        match: { $in: matchIds },
+    }).select("match moves");
+
+    const gameMap = new Map(
+        games.map((game) => [
+            game.match.toString(),
+            game,
+        ])
+    );
+
+    return matches.map((match) => {
+        const game = gameMap.get(match._id.toString());
+
+        return {
+            id: match._id,
+            gameId: game?._id ?? null,
+            mode: match.mode,
+            status: match.status,
+            result: match.result,
+            botDifficulty: match.botDifficulty,
+            player1: match.player1,
+            player2: match.player2,
+            bot: match.bot,
+            moveCount: game?.moves.length ?? 0,
+            createdAt: match.createdAt,
+            updatedAt: match.updatedAt,
+        };
+    });
 };

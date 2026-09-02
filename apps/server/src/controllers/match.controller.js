@@ -17,3 +17,19 @@ export const createMatch = async (req, res, next) => {
         next(error);
     }
 };
+
+export const getMyMatchHistory = async (req, res, next) => {
+    try {
+        const matches = await matchService.getMyMatchHistory(
+            req.user._id
+        );
+
+        res.status(200).json({
+            success: true,
+            message: "Match history fetched successfully.",
+            data: matches
+        })
+    } catch (error) {
+        next(error);
+    }
+}
