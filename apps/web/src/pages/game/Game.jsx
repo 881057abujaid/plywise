@@ -5,6 +5,7 @@ import useGameStore from "../../stores/game.store";
 
 import { Card } from "../../components/ui";
 import ChessBoard from "../../components/game/ChessBoard";
+import MoveHistory from "../../components/game/MoveHistory";
 
 const Game = () => {
     const { gameId } = useParams();
@@ -46,7 +47,7 @@ const Game = () => {
 
     if (error) {
         return (
-            <main className="flex min-h-screen items-center justify-center bg=bg">
+            <main className="flex min-h-screen items-center justify-center bg-bg">
                 <p className="text-sm text-danger">
                     {error}
                 </p>
@@ -72,18 +73,24 @@ const Game = () => {
                         Chess Game
                     </h1>
 
-                    <div className="mt-4">
-                        <ChessBoard
-                            fen={game.board}
-                            onMove={handleMove}
-                            disabled={isMoving || game.isOver}
-                        />
+                    <div className="mt-4 flex flex-col gap-6 lg:flex-row">
+                        <div className="w-full lg:flex-1">
+                            <ChessBoard
+                                fen={game.board}
+                                onMove={handleMove}
+                                disabled={isMoving || game.isOver}
+                            />
 
-                        {isMoving && (
-                            <p className="text-sm text-text-secondary">
-                                Thinking...
-                            </p>
-                        )}
+                            {isMoving && (
+                                <p className="mt-2 text-sm text-text-secondary">
+                                    Thinking...
+                                </p>
+                            )}
+                        </div>
+
+                        <div className="w-full lg:w-80">
+                            <MoveHistory moves={game.moves} />
+                        </div>
                     </div>
 
                     <div className="mt-4 space-y-2 text-text-secondary">
@@ -103,7 +110,7 @@ const Game = () => {
 
                         <p>
                             Game ID:{" "}
-                            <span className="font-monn text-sm text-gold-primary">
+                            <span className="font-mono text-sm text-gold-primary">
                                 {game.id}
                             </span>
                         </p>

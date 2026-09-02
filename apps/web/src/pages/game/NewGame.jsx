@@ -67,7 +67,7 @@ const NewGame = () => {
                 <Card variant="elevated" padding="lg">
                     <div className="space-y-3">
                         {difficulties.map((item) => {
-                            const isSelected = item.value;
+                            const isSelected = difficulty === item.value;
 
                             return (
                                 <label
