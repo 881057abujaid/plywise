@@ -92,7 +92,7 @@ const evaluateCheck = (chess) => {
         return 0;
     }
 
-    return chess.turn() === "b" ? 0.5 : -0.5;
+    return chess.turn() === "b" ? -0.5 : 0.5;
 };
 
 const evaluatePieceSafety = (chess) => {
@@ -164,6 +164,15 @@ export const evaluatePieceSafetyForTest = (fen) => {
 };
 
 export const evaluateBoard = (chess) => {
+    // Terminal Position evaluation
+    if (chess.isCheckmate()) {
+        return chess.turn() === "b" ? -10000 : 10000;
+    }
+
+    if (chess.isDraw()) {
+        return 0;
+    }
+
     let materialScore = 0;
     let safetyScore = 0;
     const board = chess._board;
