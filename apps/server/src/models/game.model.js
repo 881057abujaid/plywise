@@ -59,6 +59,70 @@ const gameSchema = new mongoose.Schema({
                 default: null,
                 trim: true,
             },
+
+            analysis: {
+                classification: {
+                    type: String,
+                    enum: [
+                        "best",
+                        "good",
+                        "inaccuracy",
+                        "mistake",
+                        "blunder",
+                    ],
+                    default: null,
+                },
+
+                bestMove: {
+                    from: String,
+                    to: String,
+                    san: String,
+                    promotion: {
+                        type: String,
+                        default: null,
+                    },
+                },
+
+                evaluationBefore: {
+                    type: Number,
+                    default: null,
+                },
+
+                evaluationAfter: {
+                    type: Number,
+                    default: null,
+                },
+
+                playedEvaluation: {
+                    type: Number,
+                    default: null,
+                },
+
+                bestEvaluation: {
+                    type: Number,
+                    default: null,
+                },
+
+                evaluationLoss: {
+                    type: Number,
+                    default: null,
+                },
+
+                isBestMove: {
+                    type: Boolean,
+                    default: null,
+                },
+
+                isCheckmate: {
+                    type: Boolean,
+                    default: null,
+                },
+
+                missedCheckmate: {
+                    type: Boolean,
+                    default: null,
+                },
+            },
         },
     ],
 },

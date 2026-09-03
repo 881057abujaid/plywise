@@ -4,6 +4,8 @@ import { makeMove } from "../utils/chess.js";
 import { updateRatings } from "./rating.service.js";
 import { updateStatistics } from "./statistics.service.js";
 import { generateBotMove } from "./bot.service.js";
+import { analyzeMove } from "./analysis.service.js";
+import { classifyMove } from "../utils/classification.js";
 
 export const makeGameMove = async (userId, gameId, from, to, promotion) => {
     const game = await Game.findById(gameId).populate({
@@ -48,6 +50,14 @@ export const makeGameMove = async (userId, gameId, from, to, promotion) => {
     const playerMove = result.move;
     const moveNumber = Math.floor(game.moves.length / 2) + 1;
 
+    const analysis = analyzeMove(
+        game.board,
+        from,
+        to,
+        promotion,
+        2
+    );
+
     game.moves.push({
         moveNumber,
         color: playerColor,
@@ -55,6 +65,12 @@ export const makeGameMove = async (userId, gameId, from, to, promotion) => {
         to: playerMove.to,
         san: playerMove.san,
         promotion: promotion ?? null,
+        analysis: analysis
+            ? {
+                ...analysis,
+                classification: classifyMove(analysis),
+            }
+            : null,
     });
 
     let botMove = null;

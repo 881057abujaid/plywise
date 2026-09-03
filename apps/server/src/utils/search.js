@@ -135,26 +135,38 @@ export const findBestMove = (fen, depth = 2) => {
     evaluationCache.clear();
 
     const chess = new Chess(fen);
+    const rootColor = chess.turn();
 
-    const publicMoves = chess.moves({
-        verbose: true
-    });
+    const legalMoves = chess.moves({ verbose: true });
 
-    if (publicMoves.length === 0) {
+    if (legalMoves.length === 0) {
         return null;
     }
 
-    const legalMoves = orderMoves([...publicMoves]);
+    const maximizingRoot = rootColor === "b";
 
+    let bestScore = maximizingRoot ? -Infinity : Infinity;
     let bestMove = null;
-    let bestScore = -Infinity;
-
     const candidates = [];
 
     for (const move of legalMoves) {
-        chess.move(move);
+        const playedMove = chess.move({
+            from: move.from,
+            to: move.to,
+            promotion: move.promotion,
+        });
 
-        const score = minimax(chess, depth - 1, false, -Infinity, Infinity);
+        if (!playedMove) {
+            continue;
+        }
+
+        const result = minimax(
+            chess,
+            depth - 1,
+            !maximizingRoot,
+            -Infinity,
+            Infinity
+        );
 
         chess.undo();
 
@@ -162,29 +174,45 @@ export const findBestMove = (fen, depth = 2) => {
             move: move.san,
             from: move.from,
             to: move.to,
-            score
+            score: result,
         });
 
-        if (score > bestScore) {
-            bestScore = score;
+        const isBetter = maximizingRoot
+            ? result > bestScore
+            : result < bestScore;
+
+        if (isBetter) {
+            bestScore = result;
             bestMove = move;
         }
     }
 
-    candidates.sort((a, b) => b.score - a.score);
-
-    // Validate the selected bestMove strictly through public legal moves API
-    const verifiedMove = publicMoves.find(
-        (m) =>
-            m.from === bestMove?.from &&
-            m.to === bestMove?.to &&
-            (!bestMove?.promotion || m.promotion === bestMove.promotion)
+    candidates.sort((a, b) =>
+        maximizingRoot
+            ? b.score - a.score
+            : a.score - b.score
     );
+
+    if (!bestMove) {
+        return null;
+    }
+
+    // Verify the selected move using the public chess.js API.
+    const verificationChess = new Chess(fen);
+
+    const verifiedMove = verificationChess
+        .moves({ verbose: true })
+        .find(
+            (move) =>
+                move.from === bestMove.from &&
+                move.to === bestMove.to &&
+                move.promotion === bestMove.promotion
+        );
 
     return {
         move: verifiedMove || bestMove,
         score: bestScore,
         candidates,
-        nodesEvaluated
+        nodesEvaluated,
     };
 };
