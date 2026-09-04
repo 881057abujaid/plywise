@@ -4,14 +4,14 @@ import { getGame as getGameApi, makeGameMove as makeGameMoveApi } from "../api/g
 
 const useGameStore = create((set) => ({
     game: null,
-    isLoaing: false,
+    isLoading: false,
     isMoving: false,
     error: null,
 
     // Actions
     getGame: async (gameId) => {
         set({
-            isLoaing: true,
+            isLoading: true,
             error: null,
         });
 
@@ -20,14 +20,14 @@ const useGameStore = create((set) => ({
 
             set({
                 game: response.data,
-                isLoaing: false,
+                isLoading: false,
             });
 
             return response.data;
         } catch (error) {
             set({
                 game: null,
-                isLoaing: false,
+                isLoading: false,
                 error: error.response?.data?.message || "Failed to load game."
             });
 
@@ -71,7 +71,7 @@ const useGameStore = create((set) => ({
     clearGame: () => {
         set({
             game: null,
-            isLoaing: false,
+            isLoading: false,
             isMoving: false,
             error: null,
         });
