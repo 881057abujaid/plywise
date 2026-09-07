@@ -36,6 +36,39 @@ const matchSchema = new mongoose.Schema({
         enum: ["player1", "player2", "bot", "draw"],
         default: null,
     },
+    coachMessages: [
+        {
+            role: {
+                type: String,
+                enum: ["coach", "player"],
+                required: true,
+            },
+            content: {
+                type: String,
+                required: true,
+                trim: true,
+            },
+            reason: {
+                type: String,
+                enum: ["missed_checkmate", "missed_opportunity"],
+                required: true,
+            },
+            priority: {
+                type: String,
+                enum: ["medium", "high", "critical"],
+                required: true,
+            },
+            triggerPly: {
+                type: Number,
+                default: null,
+                min: 1,
+            },
+            createdAt: {
+                type: Date,
+                default: Date.now,
+            },
+        }
+    ],
 },
     {
         timestamps: true,
